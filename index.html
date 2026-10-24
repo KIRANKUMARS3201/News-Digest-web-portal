@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kiran's Daily Pulse · Pro Editorial Edition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+  --bg: #050509;
+  --surface: #0b0c14;
+  --surface-card: rgba(16, 18, 28, 0.82);
+  --surface-hover: rgba(24, 27, 42, 0.96);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.04);
+  --txt: #f8fafc;
+  --muted: #64748b;
+  --muted2: #94a3b8;
+
+  /* Dynamic Active Category Theme Variables */
+  --theme: #ff6a00;
+  --theme-Soft: rgba(255, 106, 0, 0.14);
+  --theme-Border: rgba(255, 106, 0, 0.38);
+
+  /* Category Palette Constants */
+  --c-all: #ff6a00;
+  --c-world: #0ea5e9;
+  --c-india: #f59e0b;
+  --c-electronics: #a855f7;
+  --c-tech: #6366f1;
+  --c-bangalore: #10b981;
+  --c-cricket: #22c55e;
+  --c-saved: #eab308;
+
+  --r-sm: 10px;
+  --r: 14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 140px; }
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--txt);
+  background: var(--bg);
+  min-height: 100vh;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+body.drawer-open { overflow: hidden; }
+
+/* Dynamic Ambient Glow Orbs */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  transition: background 0.6s ease;
+}
+.orb-1 {
+  width: 520px; height: 520px;
+  background: radial-gradient(circle, var(--theme), transparent 70%);
+  top: -160px; left: -140px;
+}
+.orb-2 {
+  width: 460px; height: 460px;
+  background: radial-gradient(circle, #6366f1, transparent 70%);
+  bottom: -140px; right: -120px;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 22px 18px 110px;
+}
+
+.glass {
+  background: var(--surface-card);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* ── HERO HEADER ── */
+.hero {
+  border-radius: var(--r-xl);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(20, 22, 36, 0.92) 0%, rgba(10, 11, 18, 0.98) 100%);
+  transition: border-color 0.4s ease;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--theme), #fff, var(--theme), transparent);
+  transition: background 0.4s ease;
+}
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--theme-Soft);
+  border: 1px solid var(--theme-Border);
+  border-radius: 50px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  background: var(--theme);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--theme);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 13px;
+  font-size: 11.5px;
+  color: var(--txt);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pill-btn:hover { border-color: var(--theme); color: #fff; }
+.pill-btn.ai-btn {
+  background: rgba(168, 85, 247, 0.14);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #d8b4fe;
+}
+.pill-btn.ai-btn:hover { background: #a855f7; color: #fff; }
+
+.hero-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.hero-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(22px, 3.2vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  color: #fff;
+}
+.hero-date {
+  font-size: 13px;
+  color: var(--muted2);
+  margin-top: 3px;
+}
+
+/* ── STICKY NAVIGATION & FILTER BAR ── */
+.controls-dock {
+  position: sticky;
+  top: 10px;
+  border-radius: var(--r-lg);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  z-index: 100;
+  background: rgba(11, 12, 20, 0.94);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.82);
+}
+
+.cat-tabs {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+.cat-tab {
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  color: var(--muted2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.cat-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+.cat-count {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 6px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.cat-tab:hover { border-color: rgba(255,255,255,0.25); color: #fff; transform: translateY(-1px); }
+.cat-tab.active {
+  background: var(--theme);
+  border-color: var(--theme);
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 4px 16px var(--theme-Soft);
+}
+.cat-tab.active .cat-dot { background: #000 !important; }
+.cat-tab.active .cat-count { background: rgba(0, 0, 0, 0.25); color: #fff; }
+
+.filter-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.time-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.time-pill {
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.time-pill:hover { color: #fff; }
+.time-pill.active {
+  background: var(--theme-Soft);
+  border-color: var(--theme-Border);
+  color: #fff;
+  font-weight: 700;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+  max-width: 380px;
+}
+.search-wrap input {
+  width: 100%;
+  padding: 8px 30px 8px 34px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--txt);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+}
+.search-wrap input:focus { border-color: var(--theme); }
+.search-icon {
+  position: absolute;
+  left: 11px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted2);
+  pointer-events: none;
+}
+
+/* ── AI 60S BRIEFING PANEL ── */
+.ai-briefing-panel {
+  display: none;
+  border-radius: var(--r-lg);
+  padding: 20px 24px;
+  margin-bottom: 18px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.14), rgba(15, 16, 26, 0.95));
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+.ai-briefing-panel.show { display: block; }
+.ai-briefing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.ai-briefing-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #d8b4fe;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.ai-briefing-content {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #e2e8f0;
+  white-space: pre-wrap;
+}
+
+/* ── PREMIUM SIDE-IMAGE EDITORIAL NEWS GRID ── */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
+  gap: 14px;
+}
+
+.news-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 185px;
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.22s var(--ease), border-color 0.22s, background 0.22s, box-shadow 0.22s;
+  position: relative;
+  overflow: hidden;
+  border-left: 3px solid var(--card-accent, var(--theme));
+}
+.news-card:hover {
+  transform: translateY(-3px);
+  background: var(--surface-hover);
+  border-color: var(--card-accent, var(--theme));
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.85);
+}
+
+.card-meta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.source-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--card-accent, var(--theme));
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.time-badge {
+  color: var(--muted2);
+  font-weight: 600;
+}
+.time-badge.breaking {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.14);
+  padding: 2px 8px;
+  border-radius: 50px;
+}
+
+/* Split Body: Text on Left, Image Tile on Right */
+.card-split-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.card-text-col {
+  flex: 1;
+  min-width: 0;
+}
+.news-headline {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #fff;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.18s;
+}
+.news-card:hover .news-headline {
+  color: var(--card-accent, var(--theme));
+}
+.news-snippet {
+  font-size: 12.5px;
+  color: var(--muted2);
+  line-height: 1.48;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Side Thumbnail Box */
+.card-thumb-wrap {
+  width: 106px;
+  height: 92px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+.card-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s var(--ease);
+}
+.news-card:hover .card-thumb-img {
+  transform: scale(1.07);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+.cat-chip {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--card-accent, var(--theme));
+}
+.card-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.icon-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--muted2);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.18s;
+}
+.icon-btn:hover { color: #fff; border-color: var(--card-accent, var(--theme)); }
+.icon-btn.saved { color: #eab308; border-color: rgba(234, 179, 8, 0.45); background: rgba(234, 179, 8, 0.1); }
+
+/* ── FULL ARTICLE READER DRAWER (SLIDE-OVER MODAL) ── */
+.reader-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(3, 4, 8, 0.82);
+  backdrop-filter: blur(12px);
+  display: none;
+  justify-content: flex-end;
+}
+.reader-backdrop.show { display: flex; }
+
+.reader-drawer {
+  width: min(740px, 100vw);
+  height: 100%;
+  background: #0b0c14;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -20px 0 80px rgba(0, 0, 0, 0.9);
+  animation: slideIn 0.28s var(--ease);
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.reader-top-bar {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15, 16, 26, 0.95);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.reader-source-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.reader-close-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.reader-close-btn:hover { background: rgba(255, 255, 255, 0.18); }
+
+.reader-scroll-body {
+  padding: 24px 28px 60px;
+  overflow-y: auto;
+  flex: 1;
+}
+.reader-hero-img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border-radius: var(--r-lg);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  background: #111320;
+}
+.reader-headline {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 800;
+  line-height: 1.3;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.reader-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+.reader-btn-primary {
+  background: var(--theme);
+  color: #000;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 9px 16px;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.reader-btn-ai {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #e9d5ff;
+  border-radius: var(--r-sm);
+  padding: 9px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.reader-btn-ai:hover { background: #a855f7; color: #fff; }
+
+.reader-ai-box {
+  display: none;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(20, 22, 36, 0.9));
+  border: 1px solid rgba(168, 85, 247, 0.38);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #f1f5f9;
+  white-space: pre-wrap;
+}
+.reader-ai-box.show { display: block; }
+
+.reader-article-content {
+  font-size: 15.5px;
+  line-height: 1.78;
+  color: #cbd5e1;
+}
+.reader-article-content p { margin-bottom: 16px; }
+.reader-article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 12px 0;
+}
+.reader-article-content a { color: var(--theme); text-decoration: underline; }
+
+/* ── SKELETON LOADER ── */
+.skeleton-card {
+  height: 175px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── MOBILE BOTTOM NAV ── */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 9000;
+  background: rgba(10, 10, 16, 0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+  justify-content: space-around;
+}
+.mob-nav-btn {
+  background: none;
+  border: none;
+  color: var(--muted2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.mob-nav-btn.active { color: var(--theme); background: rgba(255, 255, 255, 0.06); }
+
+@media (max-width: 768px) {
+  .page { padding: 12px 10px 90px; }
+  .hero { padding: 18px 16px; }
+  .controls-dock { position: static; padding: 12px; }
+  .cat-tabs, .time-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .cat-tabs::-webkit-scrollbar, .time-pills::-webkit-scrollbar { display: none; }
+  .cat-tab, .time-pill { flex: 0 0 auto; }
+  .search-wrap { max-width: 100%; width: 100%; }
+  .search-wrap input { font-size: 16px; }
+  .news-grid { grid-template-columns: 1fr; }
+  .card-thumb-wrap { width: 92px; height: 84px; }
+  .reader-scroll-body { padding: 18px 16px 60px; }
+  .mobile-bottom-nav { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="page">
+  <!-- HERO BANNER -->
+  <header class="hero glass">
+    <div class="hero-top">
+      <div class="brand-badge">
+        <div class="live-dot"></div>
+        <span id="activeChannelBadge">Kiran's Daily Pulse · Top Digest</span>
+      </div>
+      <div class="hero-actions">
+        <button class="pill-btn ai-btn" onclick="generateAiBriefing()">✨ 60s AI Briefing</button>
+        <button class="pill-btn" onclick="manageGeminiKey()" id="keyStatusBtn">⚡ Gemini Key</button>
+        <button class="pill-btn" onclick="fetchAllFeeds()" id="syncStatusBtn">🔄 Refresh</button>
+      </div>
+    </div>
+    <div class="hero-main-row">
+      <div>
+        <h1 class="hero-title">World, India, Electronics Launches, Bengaluru &amp; Cricket</h1>
+        <div class="hero-date" id="currentDateDisplay">Loading today's edition…</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STICKY NAVIGATION & FILTER BAR -->
+  <section class="controls-dock glass">
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="all" onclick="selectCategory('all')">
+        <span class="cat-dot" style="background:var(--c-all)"></span>Top Digest <span class="cat-count" id="cnt-all">0</span>
+      </button>
+      <button class="cat-tab" data-cat="world" onclick="selectCategory('world')">
+        <span class="cat-dot" style="background:var(--c-world)"></span>World <span class="cat-count" id="cnt-world">0</span>
+      </button>
+      <button class="cat-tab" data-cat="india" onclick="selectCategory('india')">
+        <span class="cat-dot" style="background:var(--c-india)"></span>India <span class="cat-count" id="cnt-india">0</span>
+      </button>
+      <button class="cat-tab" data-cat="electronics" onclick="selectCategory('electronics')">
+        <span class="cat-dot" style="background:var(--c-electronics)"></span>Electronics &amp; Launches <span class="cat-count" id="cnt-electronics">0</span>
+      </button>
+      <button class="cat-tab" data-cat="tech" onclick="selectCategory('tech')">
+        <span class="cat-dot" style="background:var(--c-tech)"></span>Tech &amp; AI <span class="cat-count" id="cnt-tech">0</span>
+      </button>
+      <button class="cat-tab" data-cat="bangalore" onclick="selectCategory('bangalore')">
+        <span class="cat-dot" style="background:var(--c-bangalore)"></span>Bengaluru <span class="cat-count" id="cnt-bangalore">0</span>
+      </button>
+      <button class="cat-tab" data-cat="cricket" onclick="selectCategory('cricket')">
+        <span class="cat-dot" style="background:var(--c-cricket)"></span>Cricket Only <span class="cat-count" id="cnt-cricket">0</span>
+      </button>
+      <button class="cat-tab" data-cat="saved" onclick="selectCategory('saved')">
+        <span class="cat-dot" style="background:var(--c-saved)"></span>Saved <span class="cat-count" id="cnt-saved">0</span>
+      </button>
+    </div>
+
+    <div class="filter-row">
+      <div class="time-pills">
+        <button class="time-pill" data-hours="6" onclick="setTimeFilter(6)">⚡ Breaking (≤6h)</button>
+        <button class="time-pill active" data-hours="24" onclick="setTimeFilter(24)">📅 Today (≤24h)</button>
+        <button class="time-pill" data-hours="72" onclick="setTimeFilter(72)">🗓️ Last 3 Days</button>
+        <button class="time-pill" data-hours="168" onclick="setTimeFilter(168)">All (≤7d)</button>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search stories, launches, teams, or keywords… (Press /)" oninput="renderNews()">
+      </div>
+    </div>
+  </section>
+
+  <!-- GEMINI 60-SECOND EXECUTIVE BRIEFING DRAWER -->
+  <section class="ai-briefing-panel glass" id="aiBriefingPanel">
+    <div class="ai-briefing-header">
+      <span class="ai-briefing-title">✨ Gemini 60-Second Executive Digest</span>
+      <button class="icon-btn" onclick="document.getElementById('aiBriefingPanel').classList.remove('show')">✕ Close</button>
+    </div>
+    <div class="ai-briefing-content" id="aiBriefingText">Synthesizing top stories…</div>
+  </section>
+
+  <!-- NEWS FEED GRID -->
+  <main class="news-grid" id="newsGrid"></main>
+</div>
+
+<!-- FULL-ARTICLE READER SLIDE-OVER DRAWER -->
+<div class="reader-backdrop" id="readerBackdrop" onclick="closeReaderOnBackdrop(event)">
+  <aside class="reader-drawer">
+    <div class="reader-top-bar">
+      <div class="reader-source-meta">
+        <span class="source-pill" id="readerSourcePill">SOURCE</span>
+        <span style="color:var(--muted2)" id="readerTimeText">Just now</span>
+      </div>
+      <button class="reader-close-btn" onclick="closeReader()" title="Close Reader (Esc)">✕</button>
+    </div>
+    <div class="reader-scroll-body">
+      <img id="readerHeroImg" class="reader-hero-img" src="" alt="Story visual">
+      <h2 class="reader-headline" id="readerTitle">Headline</h2>
+
+      <div class="reader-toolbar">
+        <a id="readerOriginalLink" href="#" target="_blank" rel="noopener noreferrer" class="reader-btn-primary">
+          Open Original Source ↗
+        </a>
+        <button class="reader-btn-ai" onclick="summarizeOpenArticle()">
+          ✨ AI Key Takeaways
+        </button>
+        <button class="reader-btn-ai" onclick="fetchDeepFullText()" id="deepFetchBtn">
+          📖 Load Full Web Article
+        </button>
+      </div>
+
+      <div class="reader-ai-box" id="readerAiBox"></div>
+      <div class="reader-article-content" id="readerContentBody"></div>
+    </div>
+  </aside>
+</div>
+
+<!-- MOBILE PINNED BOTTOM DOCK -->
+<nav class="mobile-bottom-nav">
+  <button class="mob-nav-btn active" data-mob="all" onclick="selectCategory('all')"><span>🔥</span><span>Top</span></button>
+  <button class="mob-nav-btn" data-mob="india" onclick="selectCategory('india')"><span>🇮🇳</span><span>India</span></button>
+  <button class="mob-nav-btn" data-mob="electronics" onclick="selectCategory('electronics')"><span>⚡</span><span>Gadgets</span></button>
+  <button class="mob-nav-btn" data-mob="bangalore" onclick="selectCategory('bangalore')"><span>📍</span><span>BLR</span></button>
+  <button class="mob-nav-btn" data-mob="cricket" onclick="selectCategory('cricket')"><span>🏏</span><span>Cricket</span></button>
+</nav>
+
+<script>
+'use strict';
+
+/* ── CATEGORY COLOR & THEME CONFIGURATION ── */
+const CATEGORY_THEMES = {
+  all:         { color: '#ff6a00', soft: 'rgba(255, 106, 0, 0.14)', border: 'rgba(255, 106, 0, 0.38)', label: 'Top Digest', icon: '🔥' },
+  world:       { color: '#0ea5e9', soft: 'rgba(14, 165, 233, 0.14)', border: 'rgba(14, 165, 233, 0.38)', label: 'World News', icon: '🌍' },
+  india:       { color: '#f59e0b', soft: 'rgba(245, 158, 11, 0.14)', border: 'rgba(245, 158, 11, 0.38)', label: 'India National', icon: '🇮🇳' },
+  electronics: { color: '#a855f7', soft: 'rgba(168, 85, 247, 0.14)', border: 'rgba(168, 85, 247, 0.38)', label: 'Electronics & Launches', icon: '⚡' },
+  tech:        { color: '#6366f1', soft: 'rgba(99, 102, 241, 0.14)', border: 'rgba(99, 102, 241, 0.38)', label: 'Tech & AI', icon: '💻' },
+  bangalore:   { color: '#10b981', soft: 'rgba(16, 185, 129, 0.14)', border: 'rgba(16, 185, 129, 0.38)', label: 'Namma Bengaluru', icon: '📍' },
+  cricket:     { color: '#22c55e', soft: 'rgba(34, 197, 94, 0.14)',  border: 'rgba(34, 197, 94, 0.38)',  label: 'Cricket Pulse', icon: '🏏' },
+  saved:       { color: '#eab308', soft: 'rgba(234, 179, 8, 0.14)',  border: 'rgba(234, 179, 8, 0.38)',  label: 'Saved Bookmarks', icon: '★' }
+};
+
+/* ── CURATED LIVE RSS FEEDS (IMAGE-RICH SOURCES) ── */
+const FEED_SOURCES = [
+  // World
+  { category: 'world', label: 'BBC World', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
+  { category: 'world', label: 'Al Jazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+
+  // India
+  { category: 'india', label: 'NDTV Top Stories', url: 'https://feeds.feedburner.com/ndtvnews-top-stories' },
+  { category: 'india', label: 'The Hindu India', url: 'https://www.thehindu.com/news/national/feeder/default.rss' },
+  { category: 'india', label: 'Indian Express', url: 'https://indianexpress.com/section/india/feed/' },
+
+  // Electronics, Gadgets & New Launches
+  { category: 'electronics', label: 'GSMArena Launches', url: 'https://www.gsmarena.com/rss-news-reviews.php3' },
+  { category: 'electronics', label: 'Gizmochina', url: 'https://www.gizmochina.com/feed/' },
+  { category: 'electronics', label: 'CNX Hardware', url: 'https://www.cnx-software.com/feed/' },
+
+  // Tech & AI
+  { category: 'tech', label: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
+  { category: 'tech', label: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
+
+  // Bengaluru Local
+  { category: 'bangalore', label: 'The Hindu Bengaluru', url: 'https://www.thehindu.com/news/cities/bangalore/feeder/default.rss' },
+  { category: 'bangalore', label: 'Indian Express BLR', url: 'https://indianexpress.com/section/cities/bangalore/feed/' },
+
+  // Cricket Only
+  { category: 'cricket', label: 'ESPNcricinfo', url: 'https://www.espncricinfo.com/rss/content/story/feeds/0.xml' },
+  { category: 'cricket', label: 'NDTV Cricket', url: 'https://feeds.feedburner.com/ndtvsports-cricket' }
+];
+
+let allArticles = [];
+let articleLookup = {};
+let activeCategory = 'all';
+let maxAgeHours = 24;
+let currentlyOpenArticle = null;
+
+let savedArticlesMap = JSON.parse(localStorage.getItem('kiran_news_saved_v2') || '{}');
+let GEMINI_API_KEY = localStorage.getItem('kiran_gemini_key') || '';
+
+function initDateBanner() {
+  const now = new Date();
+  document.getElementById('currentDateDisplay').textContent =
+    now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
+    ' · Live Multi-Channel Feed';
+  document.getElementById('keyStatusBtn').textContent = GEMINI_API_KEY ? '🟢 AI Ready' : '⚡ Gemini Key';
+}
+
+function manageGeminiKey() {
+  const k = window.prompt('Enter your Gemini API Key (stored locally in browser):', GEMINI_API_KEY);
+  if (k !== null) {
+    GEMINI_API_KEY = k.trim();
+    localStorage.setItem('kiran_gemini_key', GEMINI_API_KEY);
+    initDateBanner();
+  }
+}
+
+/* ── SVG FALLBACK ART GENERATOR (IF AN ARTICLE HAS NO PHOTO) ── */
+function makeFallbackSvgDataUri(category, sourceLabel) {
+  const cfg = CATEGORY_THEMES[category] || CATEGORY_THEMES.all;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${cfg.color}" stop-opacity="0.38"/>
+        <stop offset="100%" stop-color="#0b0c14" stop-opacity="1"/>
+      </linearGradient>
+    </defs>
+    <rect width="320" height="240" fill="#0b0c14"/>
+    <rect width="320" height="240" fill="url(#g)"/>
+    <circle cx="260" cy="50" r="70" fill="${cfg.color}" fill-opacity="0.12"/>
+    <text x="24" y="125" font-family="sans-serif" font-size="42">${cfg.icon}</text>
+    <text x="24" y="185" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff" opacity="0.9">${sourceLabel.toUpperCase()}</text>
+    <text x="24" y="208" font-family="sans-serif" font-size="12" fill="${cfg.color}">${cfg.label}</text>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+/* ── 4-STAGE IMAGE EXTRACTOR FROM RSS ITEMS ── */
+function extractBestImage(item, rawHtml, category, sourceLabel) {
+  // 1. Direct thumbnail or enclosure link
+  if (item.thumbnail && /^https?:\/\//i.test(item.thumbnail)) return item.thumbnail;
+  if (item.enclosure && item.enclosure.link && /^https?:\/\//i.test(item.enclosure.link)) return item.enclosure.link;
+
+  // 2. Scrape first <img> src from description or content HTML
+  const imgMatch = String(rawHtml || '').match(/<img[^>]+(?:src|data-src)=["']([^"'>]+)["']/i);
+  if (imgMatch && imgMatch[1] && /^https?:\/\//i.test(imgMatch[1])) {
+    return imgMatch[1].replace(/&amp;/g, '&');
+  }
+
+  // 3. Fallback custom category artwork
+  return makeFallbackSvgDataUri(category, sourceLabel);
+}
+
+/* ── PARALLEL RSS FETCHER WITH XML FALLBACK ── */
+async function fetchSingleFeed(source) {
+  try {
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+    if (data && data.status === 'ok' && Array.isArray(data.items)) {
+      return data.items.map(item => normalizeArticle(item, source));
+    }
+  } catch (e) {
+    // Fallback XML Proxy
+    try {
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(source.url)}`;
+      const xmlText = await (await fetch(proxyUrl)).text();
+      const xmlDoc = new DOMParser().parseFromString(xmlText, 'text/xml');
+      const items = [...xmlDoc.querySelectorAll('item, entry')];
+      return items.map(node => {
+        const mediaContent = node.getElementsByTagNameNS('*', 'content')[0] || node.getElementsByTagNameNS('*', 'thumbnail')[0];
+        const enclosure = node.querySelector('enclosure');
+        const thumbUrl = mediaContent?.getAttribute('url') || enclosure?.getAttribute('url') || '';
+        const desc = node.querySelector('description, summary')?.textContent || '';
+        const contentEncoded = node.getElementsByTagNameNS('*', 'encoded')[0]?.textContent || desc;
+        return normalizeArticle({
+          title: node.querySelector('title')?.textContent || '',
+          link: node.querySelector('link')?.textContent || node.querySelector('link')?.getAttribute('href') || '#',
+          pubDate: node.querySelector('pubDate, published, updated')?.textContent || '',
+          description: desc,
+          content: contentEncoded,
+          thumbnail: thumbUrl
+        }, source);
+      });
+    } catch (innerErr) {
+      return [];
+    }
+  }
+  return [];
+}
+
+function normalizeArticle(item, source) {
+  const cleanTitle = stripHtml(item.title || '').trim();
+  const rawBodyHtml = item.content || item.description || '';
+  const cleanText = stripHtml(rawBodyHtml).trim();
+  const imageUrl = extractBestImage(item, rawBodyHtml, source.category, source.label);
+
+  const rawDateStr = String(item.pubDate || '').replace(' ', 'T');
+  let pubDate = new Date(rawDateStr);
+  if (Number.isNaN(pubDate.getTime())) pubDate = new Date(item.pubDate);
+
+  const now = Date.now();
+  const diffHours = Number.isNaN(pubDate.getTime())
+    ? 8
+    : Math.max(0.1, (now - pubDate.getTime()) / 3600000);
+
+  const id = 'art_' + btoa(encodeURIComponent((item.link || cleanTitle).substring(0, 90))).replace(/[^a-zA-Z0-9]/g, '');
+
+  return {
+    id,
+    title: cleanTitle,
+    link: item.link || '#',
+    snippet: cleanText.length > 180 ? cleanText.substring(0, 177) + '…' : cleanText,
+    fullHtml: sanitizeArticleHtml(rawBodyHtml, cleanText),
+    fullPlainText: cleanText,
+    imageUrl,
+    fallbackSvg: makeFallbackSvgDataUri(source.category, source.label),
+    sourceLabel: source.label,
+    category: source.category,
+    hoursOld: diffHours,
+    timeLabel: formatAge(diffHours)
+  };
+}
+
+function sanitizeArticleHtml(rawHtml, plainText) {
+  if (!rawHtml || plainText.length < 40) {
+    return `<p>${esc(plainText || 'Click "Load Full Web Article" above to pull the complete story text directly into this reader.')}</p>`;
+  }
+  const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+  doc.querySelectorAll('script, style, iframe, form').forEach(el => el.remove());
+  const paragraphs = [...doc.querySelectorAll('p')].map(p => p.textContent.trim()).filter(t => t.length > 25);
+  if (paragraphs.length >= 2) {
+    return paragraphs.map(p => `<p>${esc(p)}</p>`).join('');
+  }
+  // Split long plain text into readable paragraphs
+  const sentences = plainText.split(/(?<=\.)\s+/);
+  let chunks = [];
+  for (let i = 0; i < sentences.length; i += 3) {
+    chunks.push(`<p>${esc(sentences.slice(i, i + 3).join(' '))}</p>`);
+  }
+  return chunks.join('');
+}
+
+function formatAge(hours) {
+  if (hours < 1) return `${Math.max(4, Math.round(hours * 60))}m ago`;
+  if (hours < 24) return `${Math.round(hours)}h ago`;
+  return `${Math.round(hours / 24)}d ago`;
+}
+
+function stripHtml(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || '';
+}
+
+async function fetchAllFeeds() {
+  const grid = document.getElementById('newsGrid');
+  const syncBtn = document.getElementById('syncStatusBtn');
+  syncBtn.textContent = '⏳ Syncing…';
+
+  if (!allArticles.length) {
+    grid.innerHTML = Array(6).fill('<div class="skeleton-card"></div>').join('');
+  }
+
+  const results = await Promise.all(FEED_SOURCES.map(src => fetchSingleFeed(src)));
+  const flat = results.flat();
+
+  const seenTitles = new Set();
+  articleLookup = {};
+
+  allArticles = flat.filter(a => {
+    if (!a.title || a.hoursOld > 168) return false;
+    const key = a.title.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 45);
+    if (seenTitles.has(key)) return false;
+    seenTitles.add(key);
+    articleLookup[a.id] = a;
+    return true;
+  }).sort((a, b) => a.hoursOld - b.hoursOld);
+
+  // Also register saved articles in lookup
+  Object.values(savedArticlesMap).forEach(a => { articleLookup[a.id] = a; });
+
+  const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  syncBtn.textContent = `🟢 Live ${timeStr}`;
+
+  updateCounts();
+  renderNews();
+}
+
+function updateCounts() {
+  const pool = allArticles.filter(a => a.hoursOld <= maxAgeHours);
+  const cats = ['world', 'india', 'electronics', 'tech', 'bangalore', 'cricket'];
+  document.getElementById('cnt-all').textContent = pool.length;
+  cats.forEach(c => {
+    const el = document.getElementById(`cnt-${c}`);
+    if (el) el.textContent = pool.filter(a => a.category === c).length;
+  });
+  document.getElementById('cnt-saved').textContent = Object.keys(savedArticlesMap).length;
+}
+
+function applyCategoryTheme(cat) {
+  const cfg = CATEGORY_THEMES[cat] || CATEGORY_THEMES.all;
+  document.documentElement.style.setProperty('--theme', cfg.color);
+  document.documentElement.style.setProperty('--theme-Soft', cfg.soft);
+  document.documentElement.style.setProperty('--theme-Border', cfg.border);
+  document.getElementById('activeChannelBadge').textContent = `Kiran's Daily Pulse · ${cfg.icon} ${cfg.label}`;
+}
+
+function selectCategory(cat) {
+  activeCategory = cat;
+  applyCategoryTheme(cat);
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.toggle('active', b.dataset.mob === cat));
+  renderNews();
+}
+
+function setTimeFilter(hours) {
+  maxAgeHours = hours;
+  document.querySelectorAll('.time-pill').forEach(p => p.classList.toggle('active', Number(p.dataset.hours) === hours));
+  updateCounts();
+  renderNews();
+}
+
+function renderNews() {
+  const grid = document.getElementById('newsGrid');
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+
+  let list = activeCategory === 'saved'
+    ? Object.values(savedArticlesMap)
+    : allArticles.filter(a => a.hoursOld <= maxAgeHours);
+
+  if (activeCategory !== 'all' && activeCategory !== 'saved') {
+    list = list.filter(a => a.category === activeCategory);
+  }
+
+  if (q) {
+    list = list.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      a.snippet.toLowerCase().includes(q) ||
+      a.sourceLabel.toLowerCase().includes(q)
+    );
+  }
+
+  if (!list.length) {
+    grid.innerHTML = `
+      <div class="glass" style="grid-column:1/-1;text-align:center;padding:48px 20px;border-radius:var(--r-lg);color:var(--muted2)">
+        <div style="font-size:28px;margin-bottom:8px">📰</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:6px">No stories in this time window</div>
+        <div style="font-size:13px;margin-bottom:14px">Expand the time filter to "Last 3 Days" or "All (≤7d)" to see more coverage.</div>
+        <button class="pill-btn" onclick="setTimeFilter(168)">Show All ≤ 7 Days</button>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = list.slice(0, 64).map(a => {
+    const isSaved = Boolean(savedArticlesMap[a.id]);
+    const isBreaking = a.hoursOld <= 3;
+    const catCfg = CATEGORY_THEMES[a.category] || CATEGORY_THEMES.all;
+
+    return `
+      <article class="news-card glass" style="--card-accent: ${catCfg.color}" onclick="openReader('${a.id}')">
+        <div>
+          <div class="card-meta-top">
+            <span class="source-pill">${esc(a.sourceLabel)}</span>
+            <span class="time-badge ${isBreaking ? 'breaking' : ''}">${isBreaking ? '⚡ ' : ''}${esc(a.timeLabel)}</span>
+          </div>
+
+          <div class="card-split-row">
+            <div class="card-text-col">
+              <h3 class="news-headline">${esc(a.title)}</h3>
+              <p class="news-snippet">${esc(a.snippet || 'Tap card to open full story in reader view.')}</p>
+            </div>
+            <div class="card-thumb-wrap">
+              <img class="card-thumb-img" src="${esc(a.imageUrl)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${a.fallbackSvg}'">
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <span class="cat-chip">${catCfg.icon} ${esc(catCfg.label)}</span>
+          <div class="card-actions" onclick="event.stopPropagation()">
+            <button class="icon-btn ${isSaved ? 'saved' : ''}" onclick="toggleSaveArticle('${a.id}')">
+              ${isSaved ? '★ Saved' : '☆ Save'}
+            </button>
+            <button class="icon-btn" onclick="openReader('${a.id}')">
+              Read Story ▸
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+/* ── FULL ARTICLE READER DRAWER LOGIC ── */
+function openReader(articleId) {
+  const a = articleLookup[articleId] || savedArticlesMap[articleId];
+  if (!a) return;
+  currentlyOpenArticle = a;
+
+  const catCfg = CATEGORY_THEMES[a.category] || CATEGORY_THEMES.all;
+  const sourcePill = document.getElementById('readerSourcePill');
+  sourcePill.textContent = `${catCfg.icon} ${a.sourceLabel}`;
+  sourcePill.style.color = catCfg.color;
+
+  document.getElementById('readerTimeText').textContent = a.timeLabel;
+  document.getElementById('readerTitle').textContent = a.title;
+
+  const heroImg = document.getElementById('readerHeroImg');
+  heroImg.src = a.imageUrl;
+  heroImg.onerror = () => { heroImg.src = a.fallbackSvg; };
+
+  document.getElementById('readerOriginalLink').href = a.link;
+  document.getElementById('readerOriginalLink').style.background = catCfg.color;
+
+  document.getElementById('readerAiBox').classList.remove('show');
+  document.getElementById('readerContentBody').innerHTML = a.fullHtml;
+  document.getElementById('deepFetchBtn').textContent = '📖 Load Full Web Article';
+
+  document.getElementById('readerBackdrop').classList.add('show');
+  document.body.classList.add('drawer-open');
+
+  // If RSS snippet is short, automatically pull full web article paragraphs in background
+  if ((a.fullPlainText || '').length < 320) {
+    fetchDeepFullText(true);
+  }
+}
+
+function closeReader() {
+  document.getElementById('readerBackdrop').classList.remove('show');
+  document.body.classList.remove('drawer-open');
+}
+
+function closeReaderOnBackdrop(e) {
+  if (e.target.id === 'readerBackdrop') closeReader();
+}
+
+/* Pulls full article text from the publisher URL via CORS proxy if RSS only had a teaser */
+async function fetchDeepFullText(silent = false) {
+  if (!currentlyOpenArticle) return;
+  const btn = document.getElementById('deepFetchBtn');
+  const bodyEl = document.getElementById('readerContentBody');
+  btn.textContent = '⏳ Loading full article…';
+
+  try {
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(currentlyOpenArticle.link)}`;
+    const html = await (await fetch(proxyUrl)).text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    // Also grab high-res og:image if available
+    const ogImg = doc.querySelector('meta[property="og:image"]')?.getAttribute('content');
+    if (ogImg && /^https?:\/\//i.test(ogImg)) {
+      document.getElementById('readerHeroImg').src = ogImg;
+      currentlyOpenArticle.imageUrl = ogImg;
+    }
+
+    doc.querySelectorAll('script, style, nav, header, footer, aside, form').forEach(el => el.remove());
+    const paras = [...doc.querySelectorAll('article p, main p, .story-content p, .article-body p, p')]
+      .map(p => p.textContent.trim())
+      .filter(t => t.length > 45 && !/cookie|subscribe|newsletter|copyright/i.test(t));
+
+    if (paras.length >= 3) {
+      const uniqueParas = [...new Set(paras)].slice(0, 18);
+      const formatted = uniqueParas.map(p => `<p>${esc(p)}</p>`).join('');
+      bodyEl.innerHTML = formatted;
+      currentlyOpenArticle.fullHtml = formatted;
+      currentlyOpenArticle.fullPlainText = uniqueParas.join('\n\n');
+      btn.textContent = '✓ Full Article Loaded';
+    } else if (!silent) {
+      btn.textContent = '↗ Publisher Protected (Use Source Button)';
+    } else {
+      btn.textContent = '📖 Load Full Web Article';
+    }
+  } catch (err) {
+    btn.textContent = '📖 Load Full Web Article';
+  }
+}
+
+async function summarizeOpenArticle() {
+  if (!currentlyOpenArticle) return;
+  if (!GEMINI_API_KEY) {
+    manageGeminiKey();
+    if (!GEMINI_API_KEY) return;
+  }
+  const aiBox = document.getElementById('readerAiBox');
+  aiBox.classList.add('show');
+  aiBox.textContent = '✨ Gemini is extracting key takeaways & context…';
+
+  const prompt = `Summarize this news article in 3 crisp bullet points and 1 sentence on "Why It Matters":
+Title: ${currentlyOpenArticle.title}
+Source: ${currentlyOpenArticle.sourceLabel}
+Content: ${currentlyOpenArticle.fullPlainText || currentlyOpenArticle.snippet}`;
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const data = await res.json();
+    aiBox.textContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Could not generate takeaways.';
+  } catch (e) {
+    aiBox.textContent = 'Error connecting to Gemini API.';
+  }
+}
+
+function toggleSaveArticle(articleId) {
+  const a = articleLookup[articleId] || savedArticlesMap[articleId];
+  if (!a) return;
+  if (savedArticlesMap[articleId]) {
+    delete savedArticlesMap[articleId];
+  } else {
+    savedArticlesMap[articleId] = a;
+  }
+  localStorage.setItem('kiran_news_saved_v2', JSON.stringify(savedArticlesMap));
+  updateCounts();
+  renderNews();
+}
+
+/* ── GEMINI 60-SECOND EXECUTIVE BRIEFING ── */
+async function generateAiBriefing() {
+  if (!GEMINI_API_KEY) {
+    manageGeminiKey();
+    if (!GEMINI_API_KEY) return;
+  }
+  const panel = document.getElementById('aiBriefingPanel');
+  const txt = document.getElementById('aiBriefingText');
+  panel.classList.add('show');
+  txt.textContent = '⏳ Synthesizing top stories across World, India, Electronics, Bengaluru & Cricket…';
+
+  const topHeadlines = allArticles.slice(0, 30).map(a => `[${a.category.toUpperCase()}] ${a.title}`).join('\n');
+  const prompt = `Create a sharp 60-second morning briefing for Kiran (Product Development Engineer in Bengaluru) with 5 bullet points:
+1. 🌍 World & 🇮🇳 India Lead Story
+2. ⚡ Electronics & New Product Launches
+3. 💻 Tech & AI
+4. 📍 Bengaluru Local Update
+5. 🏏 Cricket Update
+
+Headlines:
+${topHeadlines}`;
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const data = await res.json();
+    txt.textContent = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Unable to generate summary.';
+  } catch (err) {
+    txt.textContent = 'Error connecting to Gemini API. Check your key.';
+  }
+}
+
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeReader();
+  if (e.key === '/' && document.activeElement.tagName !== '
