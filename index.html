@@ -641,7 +641,7 @@ body.drawer-open { overflow: hidden; }
       <div class="hero-actions">
         <button class="pill-btn ai-btn" onclick="generateAiBriefing()">✨ 60s AI Briefing</button>
         <button class="pill-btn" onclick="manageGeminiKey()" id="keyStatusBtn">⚡ Gemini Key</button>
-        <button class="pill-btn" onclick="fetchAllFeeds()">🔄 Refresh</button>
+        <button class="pill-btn" onclick="fetchAllFeeds()" id="syncStatusBtn">🔄 Refresh</button>
       </div>
     </div>
     <div>
@@ -916,8 +916,17 @@ function showToast(msg) {
   setTimeout(() => div.remove(), 2500);
 }
 
+function escapeSvgText(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 function makeFallbackSvgDataUri(category, sourceLabel) {
   const cfg = CATEGORY_THEMES[category] || CATEGORY_THEMES.all;
+  const safeSource = escapeSvgText(String(sourceLabel || '').toUpperCase());
+  const safeLabel = escapeSvgText(cfg.label);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
     <defs>
       <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -929,8 +938,8 @@ function makeFallbackSvgDataUri(category, sourceLabel) {
     <rect width="320" height="240" fill="url(#g)"/>
     <circle cx="260" cy="50" r="70" fill="${cfg.color}" fill-opacity="0.12"/>
     <text x="24" y="125" font-family="sans-serif" font-size="42">${cfg.icon}</text>
-    <text x="24" y="185" font-family="sans-serif" font-weight="bold" font-size="15" fill="#ffffff" opacity="0.9">${sourceLabel.toUpperCase()}</text>
-    <text x="24" y="208" font-family="sans-serif" font-size="12" fill="${cfg.color}">${cfg.label}</text>
+    <text x="24" y="185" font-family="sans-serif" font-weight="bold" font-size="15" fill="#ffffff" opacity="0.9">${safeSource}</text>
+    <text x="24" y="208" font-family="sans-serif" font-size="12" fill="${cfg.color}">${safeLabel}</text>
   </svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
@@ -978,26 +987,25 @@ function parseXmlStringToItems(xmlText, source) {
 }
 
 async function fetchSingleFeed(source) {
-  const proxies = [
-    url => 'https://api.allorigins.win/get?url=' + encodeURIComponent(url),
-    url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
-    url => 'https://corsproxy.io/?' + encodeURIComponent(url)
-  ];
+  // 1. rss2json — reliable, CORS-friendly, returns structured JSON
+  try {
+    const res = await fetchWithTimeout(
+      'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(source.url),
+      9000
+    );
+    const data = await res.json();
+    if (data && data.status === 'ok' && Array.isArray(data.items) && data.items.length) {
+      return data.items.slice(0, 12).map(item => normalizeArticle({
+        title: item.title,
+        link: item.link,
+        pubDate: item.pubDate,
+        description: item.description,
+        content: item.content,
+        thumbnail: item.thumbnail || (item.enclosure && item.enclosure.link) || ''
+      }, source));
+    }
+  } catch (err) {}
 
-  for (const pFn of proxies) {
-    try {
-      const res = await fetchWithTimeout(pFn(source.url), 4500);
-      const text = await res.text();
-      let xmlText = text;
-      try {
-        const json = JSON.parse(text);
-        if (json && json.contents) xmlText = json.contents;
-      } catch (e) {}
-
-      const items = parseXmlStringToItems(xmlText, source);
-      if (items.length) return items;
-    } catch (err) {}
-  }
   return [];
 }
 
@@ -1016,7 +1024,12 @@ function normalizeArticle(item, source) {
     ? 6
     : Math.max(0.1, (now - pubDate.getTime()) / 3600000);
 
-  const id = 'art_' + btoa(encodeURIComponent((item.link || cleanTitle).substring(0, 80))).replace(/[^a-zA-Z0-9]/g, '');
+  let id;
+  try {
+    id = 'art_' + btoa(encodeURIComponent((item.link || cleanTitle).substring(0, 80))).replace(/[^a-zA-Z0-9]/g, '');
+  } catch (e) {
+    id = 'art_' + Math.random().toString(36).slice(2);
+  }
 
   return {
     id,
@@ -1064,26 +1077,34 @@ function stripHtml(html) {
 }
 
 /* ── LOAD FEEDS WITH GUARANTEED FALLBACK INJECTION ── */
-function fetchAllFeeds() {
+async function fetchAllFeeds() {
   const syncBtn = document.getElementById('syncStatusBtn');
-  syncBtn.textContent = '⏳ Loading…';
+  if (syncBtn) syncBtn.textContent = '⏳ Loading…';
 
   allArticles = [];
   articleLookup = {};
   seenTitleSet.clear();
 
-  // 1. Pre-load saved bookmarks
+  // 1. Pre-load saved bookmarks (ensure visuals)
   Object.values(savedArticlesMap).forEach(a => {
+    if (!a.imageUrl || /^data:image\/svg/i.test(a.imageUrl)) {
+      a.imageUrl = makeFallbackSvgDataUri(a.category || 'all', a.sourceLabel || 'Saved');
+    }
+    if (!a.fallbackSvg || /^data:image\/svg/i.test(a.fallbackSvg)) {
+      a.fallbackSvg = a.imageUrl;
+    }
     articleLookup[a.id] = a;
     allArticles.push(a);
     seenTitleSet.add(a.title.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 42));
   });
 
-  // 2. Pre-load guaranteed fallback stories so every single category tab has rich articles instantly
+  // 2. Pre-load guaranteed fallback stories so every category tab has rich articles instantly
   GUARANTEED_FALLBACK_NEWS.forEach(a => {
     const key = a.title.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 42);
     if (!seenTitleSet.has(key)) {
       seenTitleSet.add(key);
+      if (!a.imageUrl) a.imageUrl = makeFallbackSvgDataUri(a.category, a.sourceLabel);
+      if (!a.fallbackSvg) a.fallbackSvg = a.imageUrl;
       allArticles.push(a);
       articleLookup[a.id] = a;
     }
@@ -1092,31 +1113,34 @@ function fetchAllFeeds() {
   updateCounts();
   renderNews();
 
-  // 3. Fetch live RSS feeds in background and merge
-  let completedFeeds = 0;
-  FEED_SOURCES.forEach(src => {
-    fetchSingleFeed(src).then(items => {
-      completedFeeds++;
-      if (items && items.length) {
-        items.forEach(a => {
-          if (!a.title || a.hoursOld > 168) return;
-          const key = a.title.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 42);
-          if (!seenTitleSet.has(key)) {
-            seenTitleSet.add(key);
-            allArticles.push(a);
-            articleLookup[a.id] = a;
-          }
-        });
-        allArticles.sort((a, b) => a.hoursOld - b.hoursOld);
-        updateCounts();
-        renderNews();
-      }
-      if (completedFeeds === FEED_SOURCES.length) {
-        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        syncBtn.textContent = `🟢 Live ${timeStr}`;
-      }
-    });
-  });
+  // 3. Fetch live RSS feeds sequentially (avoids rss2json rate limits) and merge
+  let liveAdded = 0;
+  for (const src of FEED_SOURCES) {
+    const items = await fetchSingleFeed(src);
+    if (items && items.length) {
+      let added = 0;
+      items.forEach(a => {
+        if (!a.title || a.hoursOld > 168) return;
+        const key = a.title.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 42);
+        if (!seenTitleSet.has(key)) {
+          seenTitleSet.add(key);
+          if (!a.imageUrl) a.imageUrl = makeFallbackSvgDataUri(a.category, a.sourceLabel);
+          if (!a.fallbackSvg) a.fallbackSvg = a.imageUrl;
+          allArticles.push(a);
+          articleLookup[a.id] = a;
+          added++;
+        }
+      });
+      if (added) liveAdded += added;
+      allArticles.sort((a, b) => a.hoursOld - b.hoursOld);
+      updateCounts();
+      renderNews();
+    }
+    // small pause to stay under rss2json's anonymous rate limit
+    await new Promise(r => setTimeout(r, 1300));
+  }
+  const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (syncBtn) syncBtn.textContent = liveAdded ? `🟢 Live ${timeStr} (+${liveAdded})` : `🟢 Ready ${timeStr}`;
 }
 
 function updateCounts() {
@@ -1188,6 +1212,8 @@ function renderNews() {
     const isSaved = Boolean(savedArticlesMap[a.id]);
     const isBreaking = a.hoursOld <= 3;
     const catCfg = CATEGORY_THEMES[a.category] || CATEGORY_THEMES.all;
+    const safeImage = a.imageUrl || makeFallbackSvgDataUri(a.category || 'all', a.sourceLabel || 'News');
+    const safeFallback = a.fallbackSvg || safeImage;
 
     return `
       <article class="news-card glass" style="--card-accent: ${catCfg.color}" onclick="openReader('${a.id}')">
@@ -1202,7 +1228,7 @@ function renderNews() {
               <p class="news-snippet">${esc(a.snippet || 'Tap card to open full story in reader view.')}</p>
             </div>
             <div class="card-thumb-wrap">
-              <img class="card-thumb-img" src="${esc(a.imageUrl)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${a.fallbackSvg}'">
+              <img class="card-thumb-img" src="${esc(safeFallback)}" alt="" loading="lazy"${safeImage && safeImage !== safeFallback ? ' data-real-src="' + esc(safeImage) + '"' : ''}>
             </div>
           </div>
         </div>
@@ -1218,6 +1244,22 @@ function renderNews() {
       </article>
     `;
   }).join('');
+
+  hydrateCardImages();
+}
+
+function hydrateCardImages() {
+  document.querySelectorAll('.card-thumb-img[data-real-src]').forEach(img => {
+    const real = img.dataset.realSrc;
+    if (!real || real === img.getAttribute('src')) {
+      img.removeAttribute('data-real-src');
+      return;
+    }
+    const probe = new Image();
+    probe.onload = () => { img.src = real; img.removeAttribute('data-real-src'); };
+    probe.onerror = () => { img.removeAttribute('data-real-src'); };
+    probe.src = real;
+  });
 }
 
 /* ── FULL ARTICLE READER DRAWER LOGIC ── */
@@ -1235,8 +1277,14 @@ function openReader(articleId) {
   document.getElementById('readerTitle').textContent = a.title;
 
   const heroImg = document.getElementById('readerHeroImg');
-  heroImg.src = a.imageUrl;
-  heroImg.onerror = () => { heroImg.src = a.fallbackSvg; };
+  const safeFallback = a.fallbackSvg || makeFallbackSvgDataUri(a.category || 'all', a.sourceLabel || 'News');
+  const safeImage = a.imageUrl || safeFallback;
+  heroImg.src = safeFallback;
+  if (safeImage && safeImage !== safeFallback) {
+    const probe = new Image();
+    probe.onload = () => { heroImg.src = safeImage; };
+    probe.src = safeImage;
+  }
 
   document.getElementById('readerOriginalLink').href = a.link;
   document.getElementById('readerOriginalLink').style.background = catCfg.color;
